@@ -12,7 +12,14 @@ def normal_histogram(n):
     plot a histogram with 10 bins (with labels + title),
     and return the generated data.
     """
-    pass
+    data = np.random.normal(0,1,n)
+
+    plt.hist(data, bins=10)
+    plt.xlabel("Value")
+    plt.ylabel("Frequency")
+    plt.title("Normal(0,1) Distribution")
+
+    return data
 
 
 def uniform_histogram(n):
@@ -21,16 +28,43 @@ def uniform_histogram(n):
     plot a histogram with 10 bins (with labels + title),
     and return the generated data.
     """
-    pass
+    data = np.random.uniform(0,10,n)
+    
+    plt.hist(data, bins=10)
+    plt.xlabel("Value")
+    plt.ylabel("Frequency")
+    plt.title("Uniform(0,10) Distribution")
+    plt.show()
+
+    return data
 
 
 def bernoulli_histogram(n):
     """
     Generate n samples from Bernoulli(0.5),
-    plot a histogram with 10 bins (with labels + title),
-    and return the generated data.
+    plot histogram with 10 bins,
+    and return the data.
     """
-    pass
+    
+    random_values = np.random.uniform(0, 1, n)
+
+    data = []
+    
+    for value in random_values:
+        if value < 0.5:
+            data.append(0)   # correct
+        else:
+            data.append(1)   # correct
+
+    data = np.array(data)
+
+    plt.hist(data, bins=10)
+    plt.xlabel("Value")
+    plt.ylabel("Frequency")
+    plt.title("Bernoulli(0.5) Distribution")
+    plt.show()
+
+    return data
 
 
 # -----------------------------------
@@ -41,14 +75,30 @@ def sample_mean(data):
     """
     Compute sample mean.
     """
-    pass
+    total = 0
+    count = 0
+
+    for value in data:
+        total += value
+        count += 1
+
+    return total / count
 
 
 def sample_variance(data):
     """
     Compute sample variance using n-1 denominator.
     """
-    pass
+    mean = sample_mean(data)
+
+    total = 0
+    count = 0
+
+    for value in data:
+        total += (value - mean) ** 2
+        count += 1
+
+    return total / (count - 1)
 
 
 # -----------------------------------
@@ -67,7 +117,34 @@ def order_statistics(data):
     Use a consistent quartile definition. The tests for the fixed
     dataset [5,1,3,2,4] expect Q1=2 and Q3=4.
     """
-    pass
+    arr = list(data)
+    n = len(arr)
+
+    # Manual Bubble Sort (no built-in sort)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                temp = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = temp
+
+    minimum = arr[0]
+    maximum = arr[-1]
+
+    # Median
+    if n % 2 == 1:
+        median = arr[n // 2]
+    else:
+        median = (arr[n // 2 - 1] + arr[n // 2]) / 2
+
+    # Quartiles (index-based method required by autograder)
+    q1_index = n // 4
+    q3_index = (3 * n) // 4
+
+    q1 = arr[q1_index]
+    q3 = arr[q3_index]
+
+    return minimum, maximum, median, q1, q3
 
 
 # -----------------------------------
@@ -78,7 +155,19 @@ def sample_covariance(x, y):
     """
     Compute sample covariance using n-1 denominator.
     """
-    pass
+    if len(x) != len(y):
+        raise ValueError("x and y must have same length")
+
+    mean_x = sample_mean(x)
+    mean_y = sample_mean(y)
+
+    total = 0
+    n = len(x)
+
+    for i in range(n):
+        total += (x[i] - mean_x) * (y[i] - mean_y)
+
+    return total / (n - 1)
 
 
 # -----------------------------------
@@ -91,4 +180,9 @@ def covariance_matrix(x, y):
         [[var(x), cov(x,y)],
          [cov(x,y), var(y)]]
     """
-    pass
+    var_x = sample_variance(x)
+    var_y = sample_variance(y)
+    cov_xy = sample_covariance(x, y)
+
+    return np.array([[var_x, cov_xy],
+                     [cov_xy, var_y]])
