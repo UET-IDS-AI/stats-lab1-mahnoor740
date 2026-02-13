@@ -1,0 +1,100 @@
+name: Autograding Tests
+'on':
+- workflow_dispatch
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Q1a
+      id: q1a
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Q1a
+        setup-command: pip install numpy matplotlib pytest
+        command: pytest test_stats_lab.py::test_q1_normal
+        timeout: 10
+        max-score: 10
+    - name: Q1b
+      id: q1b
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Q1b
+        setup-command: pip install numpy matplotlib pytest
+        command: pytest test_stats_lab.py::test_q1_uniform
+        timeout: 10
+        max-score: 10
+    - name: Q1c
+      id: q1c
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Q1c
+        setup-command: pip install numpy matplotlib pytest
+        command: pytest test_stats_lab.py::test_q1_bernoulli
+        timeout: 10
+        max-score: 10
+    - name: Q2a
+      id: q2a
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Q2a
+        setup-command: pip install numpy matplotlib pytest
+        command: pytest test_stats_lab.py::test_q2_mean
+        timeout: 10
+        max-score: 10
+    - name: Q3
+      id: q3
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Q3
+        setup-command: pip install numpy matplotlib pytest
+        command: pytest test_stats_lab.py::test_q3_order_statistics
+        timeout: 10
+        max-score: 20
+    - name: Q4
+      id: q4
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Q4
+        setup-command: pip install numpy matplotlib pytest
+        command: pytest test_stats_lab.py::test_q5_covariance_matrix
+        timeout: 10
+        max-score: 15
+    - name: Q5
+      id: q5
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Q5
+        setup-command: pip install numpy matplotlib pytest
+        command: pytest test_stats_lab.py::test_q5_covariance_matrix
+        timeout: 10
+        max-score: 15
+    - name: Q2b
+      id: q2b
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Q2b
+        setup-command: pip install numpy matplotlib pytest
+        command: pytest test_stats_lab.py::test_q2_variance
+        timeout: 10
+        max-score: 10
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        Q1A_RESULTS: "${{steps.q1a.outputs.result}}"
+        Q1B_RESULTS: "${{steps.q1b.outputs.result}}"
+        Q1C_RESULTS: "${{steps.q1c.outputs.result}}"
+        Q2A_RESULTS: "${{steps.q2a.outputs.result}}"
+        Q3_RESULTS: "${{steps.q3.outputs.result}}"
+        Q4_RESULTS: "${{steps.q4.outputs.result}}"
+        Q5_RESULTS: "${{steps.q5.outputs.result}}"
+        Q2B_RESULTS: "${{steps.q2b.outputs.result}}"
+      with:
+        runners: q1a,q1b,q1c,q2a,q3,q4,q5,q2b
